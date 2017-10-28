@@ -204,36 +204,36 @@
 
 ; ex 1.20
 
-;(gcd 206 40)
-;
-; (if (= 40 0) ...)
-;
-; (gcd 40 (remainder 206 40))
-;
-; (if (= (remainder 206 40) 0) ...)
-;
-; (if (= 6 0) ...)
-;
-; (gcd (remainder 206 40) (remainder 40 (remainder 206 40)))
-;
-; (if (= (remainder 40 (remainder 206 40)) 0) ...)
-;
-; (if (= 4 0) ...)
-;
-; (gcd (remainder 40 (remainder 206 40)) (remainder (remainder 206 40) (remainder 40 (remainder 206 40))))
-;
-; (if (= (remainder (remainder 206 40) (remainder 40 (remainder 206 40))) 0) ...)
-;
-; (if (= 2 0) ...)
-;
-; (gcd (remainder (remainder 206 40) (remainder 40 (remainder 206 40))) (remainder (remainder 40 (remainder 206 40)) (remainder (remainder 206 40) (remainder 40 (remainder 206 40)))))
-;
-; (if (= (remainder (remainder 40 (remainder 206 40)) (remainder (remainder 206 40) (remainder 40 (remainder 206 40)))) 0) ...)
-;
-; (if (= 0 0) ...)
-; (remainder (remainder 206 40) (remainder 40 (remainder 206 40)))
-
-; 18 times for normal-order 14 times for evaluating 4 times for final reduction.
+;(gcd 206 40) 
+;  
+; (if (= 40 0) ...) 
+;  
+; (gcd 40 (remainder 206 40)) 
+;  
+; (if (= (remainder 206 40) 0) ...) 
+;  
+; (if (= 6 0) ...) 
+;  
+; (gcd (remainder 206 40) (remainder 40 (remainder 206 40))) 
+;  
+; (if (= (remainder 40 (remainder 206 40)) 0) ...) 
+;  
+; (if (= 4 0) ...) 
+;  
+; (gcd (remainder 40 (remainder 206 40)) (remainder (remainder 206 40) (remainder 40 (remainder 206 40)))) 
+;  
+; (if (= (remainder (remainder 206 40) (remainder 40 (remainder 206 40))) 0) ...) 
+;  
+; (if (= 2 0) ...) 
+;  
+; (gcd (remainder (remainder 206 40) (remainder 40 (remainder 206 40))) (remainder (remainder 40 (remainder 206 40)) (remainder (remainder 206 40) (remainder 40 (remainder 206 40))))) 
+;  
+; (if (= (remainder (remainder 40 (remainder 206 40)) (remainder (remainder 206 40) (remainder 40 (remainder 206 40)))) 0) ...) 
+;  
+; (if (= 0 0) ...) 
+; (remainder (remainder 206 40) (remainder 40 (remainder 206 40))) 
+  
+; 18 times for normal-order 14 times for evaluating 4 times for final reduction.   
 
 ;(gcd 206 40)
 ;(gcd 40
@@ -255,10 +255,14 @@
   (cond ((> (square test-divisor) n) n)
         ((divides? test-divisor n) test-divisor)
         (else (find-divisor n
-                            (+ test-divisor 1)))))
+                            (next test-divisor)))))
 
 (define (divides? a b)
   (= (remainder b a) 0))
+
+(define (next x)
+  (cond ((= x 2) 3)
+        (else (+ x 2))))
 
 (define (prime? n)
   (= n (smallest-divisor n)))
@@ -292,7 +296,7 @@
   (start-prime-test n (runtime)))
 
 (define (start-prime-test n start-time)
-  (if (prime? n)
+  (if (fast-prime? n 100)
       (report-prime (- (runtime) start-time))))
 
 (define (report-prime elapsed-time)
@@ -310,8 +314,28 @@
 
 (define (helper a count)
   (timed-prime-test a)
-  (cond ((prime? a) (search-for-primes-iter (+ a 2) (+ count 1)))
+  (cond ((fast-prime? a 100) (search-for-primes-iter (+ a 2) (+ count 1)))
         (else (search-for-primes-iter (+ a 2) count))))
 
 ; yes the timing data increases (sqrt 10) times as order of magnitude increases.
 ; yes as no. of steps increases, the time needed increases as well
+
+; ex 1.23
+; ratio is approximately 1.6 ~ 1.5
+; this is due to next's cond test, an extra step is required for the cond test
+
+; ex 1.24
+; if the func ran in log time, shld expect running time to be linear
+; with resp to no. of digits
+; but growth is faster than that.
+; probably due to performing primative operations on
+; large numbers is not constant time, but grows with size of no.
+
+; ex 1.25
+; probably not. by writing the code for expmod this way, would probably use more stack space.
+; and the process would be more computationally expensive.
+
+; ex 1.26
+; the interpreter would have to evaluate both statements instead of just one,
+; this is a change from linear recursion to a tree recursion which would transform
+; the process into a O(n) process from a O(log n) process.
