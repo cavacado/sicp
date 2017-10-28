@@ -112,4 +112,66 @@
         ((even? counter) (expt-iter-log a (square b) (/ counter 2)))
         (else (expt-iter-log (* a b) b (- counter 1)))))
 
+;(expt-log 2 5)
+;(expt-iter-log 1 2 5)
+;(expt-iter-log 2 2 4)
+;(expt-iter-log 2 4 2)
+;(expt-iter-log 2 16 1)
+;(expt-iter-log 32 16 0)
+;32
+
+; ex 1.17
+
+(define (cus-mult a b)
+  (if (= b 0)
+      0
+      (+ a (cus-mult a (- b 1)))))
+
+(define (double x)
+  (* 2 x))
+
+(define (halve x)
+  (/ x 2))
+
+(define (mult-iterative a b)
+  (mult-iter 0 a b))
+
+(define (mult-iter x a b)
+  (if (= b 0)
+      x
+      (mult-iter (+ x a)
+                 a
+                 (- b 1))))
+
+(define (mult-log a b)
+  (mult-iter-log 0 a b))
+
+(define (mult-iter-log x a b)
+  (cond ((= b 0) x)
+        ((even? b) (mult-iter-log (+ x (double a))
+                                  a
+                                  (- b 2)))
+        (else (mult-iter-log (+ x a)
+                             a
+                             (- b 1)))))
+
+(define (fast-mult a b)
+  (cond ((= b 0) 0)
+        ((even? b) (double (fast-mult a (halve b))))
+        (else (+ a (fast-mult a (- b 1))))))
+
+; ex 1.18
+
+(define (fast-mult-iterative a b)
+  (fast-mult-iter 0 a b))
+
+(define (fast-mult-iter x a b)
+  (cond ((= b 0) x)
+        ((even? b) (fast-mult-iter (double x)
+                                   a
+                                   (halve b)))
+        (else (fast-mult-iter (+ x a)
+                              a
+                              (- b 1)))))
+;; nice!
 
