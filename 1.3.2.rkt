@@ -130,9 +130,9 @@
               (cont-frac-iter n d (inc count) k)))))
   (cont-frac-iter n d 1 k))
       
-(cont-frac (lambda (i) 1.0)
-           (lambda (i) 1.0)
-           11)
+;(cont-frac (lambda (i) 1.0)
+;           (lambda (i) 1.0)
+;           11)
 
 ; phi => 0.6180469715698392
 ; roughly around 11
@@ -146,3 +146,16 @@
             (cont-frac-recurse (lambda (x) (n (+ x 1)))
                                (lambda (x) (d (+ x 1)))
                                (- k 1))))))
+
+; ex 1.38
+(define (approx-e k)
+  (define (d-eqn x)
+    (cond ((= x 2) 2)
+          ((= (remainder (- x 2) 3) 0)
+           (* 2 (+ (/ (- x 2) 3) 1)))
+          (else 1)))
+  (+ 2.0 (cont-frac (lambda (i) 1.0)
+             d-eqn
+             k)))
+
+; ex 1.39
