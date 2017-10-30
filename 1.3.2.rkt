@@ -159,3 +159,18 @@
              k)))
 
 ; ex 1.39
+(define (tan-cf x k)
+  (define (d-eqn i)
+    (if (= i 1)
+        1
+        (+ 2 (d-eqn (- i 1)))))
+  (define (tan-cf-iter x count k)
+    (cond ((= count k) (/ (square x) (d-eqn k)))
+          ((= count 1) (/ x (- 1
+                               (tan-cf-iter x (inc count) k))))
+          (else (/ (square x)
+                   (- (d-eqn count)
+                      (tan-cf-iter x (inc count) k))))))
+  (tan-cf-iter x 1 k))
+
+; after ~ 4 terms then it will converge to the value of tan x
