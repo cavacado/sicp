@@ -174,3 +174,74 @@
   (tan-cf-iter x 1 k))
 
 ; after ~ 4 terms then it will converge to the value of tan x
+
+(define (average-damp f)
+  (lambda (x)
+    (average x (f x))))
+
+(define (sqrt-cus-new x)
+  (fixed-point
+   (average-damp
+    (lambda (y) (/ x y)))
+   1.0))
+
+(define (cube-root x)
+  (fixed-point
+   (average-damp
+    (lambda (y)
+      (/ x (square y))))
+   1.0))
+
+(define (deriv g)
+  (lambda (x)
+    (/ (- (g (+ x dx)) (g x))
+       dx)))
+
+(define dx 0.00001)
+
+(define (newton-xform g)
+  (lambda (x)
+    (- x (/ (g x)
+            ((deriv g) x)))))
+
+(define (newtons-method g guess)
+  (fixed-point (newton-xform g)
+               guess))
+
+(define (sqrt-newton x)
+  (newtons-method
+   (lambda (y)
+     (- (square y) x))
+   1.0))
+
+(define (fixed-point-of-transform
+         g transform guess)
+  (fixed-point (transform g) guess))
+
+(define (sqrt-fixed-one x)
+  (fixed-point-of-transform
+   (lambda (y) (/ x y))
+   average-damp
+   1.0))
+
+(define (sqrt-fixed-two x)
+  (fixed-point-of-transform
+   (lambda (y) (- (square y) x))
+   newton-xform
+   1.0))
+
+; ex 1.40
+
+(define (cubic a b c)
+  (lambda (y) (- (cube y) (* a (square y)) (* b y) c)))
+
+(define (cubic-of x a b c)
+  (newtons-method
+   (cubic a b c)
+   1.0))
+
+(define (double-cus f)
+  (lambda (x)
+    (f (f x))))
+
+; (((double-cus (double-cus double-cus)) inc) 5) => 21
