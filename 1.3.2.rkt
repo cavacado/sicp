@@ -240,8 +240,21 @@
    (cubic a b c)
    1.0))
 
+; ex 1.41
 (define (double-cus f)
   (lambda (x)
     (f (f x))))
 
 ; (((double-cus (double-cus double-cus)) inc) 5) => 21
+
+; ex 1.42
+(define (compose f g)
+  (lambda (x)
+    (f (g x))))
+
+; ex 1.43
+(define (repeated f n)
+  (lambda (x)
+    (if (= n 1)
+        (f x)
+        ((repeated (compose f f) (- n 1)) x))))
