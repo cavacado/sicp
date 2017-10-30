@@ -253,8 +253,37 @@
     (f (g x))))
 
 ; ex 1.43
+;(define (repeated f n)
+;  (lambda (x)
+;    (if (= n 1)
+;        (f x)
+;        ((repeated (compose f f) (- n 1)) x))))
+
 (define (repeated f n)
+  (if (= n 1)
+      (lambda (x) x)
+      (compose f (repeated f (- n 1)))))
+
+; ex 1.44
+
+(define (smooth f)
   (lambda (x)
-    (if (= n 1)
-        (f x)
-        ((repeated (compose f f) (- n 1)) x))))
+    (/ (+ (f (- x dx))
+       (f x)
+       (f (+ x dx)))
+       3)))
+
+(define (n-fold f n)
+  ((repeated smooth n) f))
+
+; ex 1.45
+(define (n-root x n)
+    (fixed-point
+     ((repeated
+       average-damp
+       n)
+      (lambda (y)
+         (/ x (expt y (- n 1)))))
+     1.0))
+
+; ex 1.46...
