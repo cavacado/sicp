@@ -169,3 +169,46 @@
                              (make-point 2 9))
                (make-segment (make-point 2 0)
                              (make-point -10 9))))
+
+(define (cons-cus x y)
+  (define (dispatch m)
+    (cond ((= m 0) x)
+          ((= m 1) y)
+          (else
+           (error "Argument not 0 or 1: CONS" m))))
+  dispatch)
+
+(define (car-cus z) (z 0))
+(define (cdr-cus z) (z 1))
+
+; ex 2.4
+
+(define (cons-alt x y)
+  (lambda (m) (m x y)))
+
+(define (car-alt z)
+  (z (lambda (p q) p)))
+
+(define (cdr-alt z)
+  (z (lambda (p q) q)))
+
+; ex 2.5
+
+(define (cons-positive x y)
+  (* (expt 2 x) (expt 3 y)))
+
+(define (car-positive z)
+  (define (helper x count)
+    (if (not (integer? (/ x 2)))
+        count
+        (helper (/ x 2) (inc count))))
+  (helper z 0))
+
+(define (cdr-positive z)
+  (define (helper x count)
+    (if (not (integer? (/ x 3)))
+        count
+        (helper (/ x 3) (inc count))))
+  (helper z 0))
+
+; ex 2.6
