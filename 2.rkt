@@ -212,3 +212,14 @@
   (helper z 0))
 
 ; ex 2.6
+
+(define zero (lambda (f) (lambda (x) x)))
+(define (add-1 n)
+  (lambda (f) (lambda (x) (f ((n f) x)))))
+(define one
+  (lambda (f) (lambda (x) (f x))))
+(define two
+  ;(lambda (f) (lambda (x) (f (((lambda (a) (lambda (b) (a b))) f) x))))
+  ;(lambda (f) (lambda (x) (f ((lambda (b) (f b)) x))))
+  (lambda (f) (lambda (x) (f (f x)))))
+;....
