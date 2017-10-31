@@ -115,3 +115,57 @@
                 (make-point 10 10)))
 
 ; ex 2.3
+
+(define (make-rect a b c d)
+  (cons a (cons b (cons c d))))
+
+(define (get-a rect)
+  (car rect))
+
+(define (get-b rect)
+  (car (cdr rect)))
+
+(define (get-c rect)
+  (car (cdr (cdr rect))))
+
+(define (get-d rect)
+  (cdr (cdr (cdr rect))))
+
+(define (square x)
+  (* x x))
+
+(define cus-rect
+  (make-rect  (make-point 0 0)
+              (make-point 0 2)
+              (make-point 2 2)
+              (make-point 2 0)))
+
+(define (distance-between c1 c2)
+  (sqrt (+ (square (- (x-point c2) (x-point c1)))
+           (square (- (y-point c2) (y-point c1))))))
+
+(define (perimeter rect)
+  (+ (distance-between (get-a rect) (get-b rect))
+     (distance-between (get-b rect) (get-c rect))
+     (distance-between (get-c rect) (get-d rect))
+     (distance-between (get-d rect) (get-a rect))))
+
+(define (area rect)
+  (* (distance-between (get-a rect) (get-b rect))
+     (distance-between (get-a rect) (get-d rect))))
+
+(define (make-rect-2 l1 l2 l3 l4)
+  (cons (start-segment l1)
+        (cons (start-segment l2)
+              (cons (start-segment l3)
+                    (start-segment l4)))))
+
+(define cus-rect-2
+  (make-rect-2 (make-segment (make-point 0 0)
+                             (make-point 10 10))
+               (make-segment (make-point 0 2)
+                             (make-point 0 8))
+               (make-segment (make-point 2 2)
+                             (make-point 2 9))
+               (make-segment (make-point 2 0)
+                             (make-point -10 9))))
