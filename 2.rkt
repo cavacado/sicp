@@ -74,3 +74,44 @@
 
 (define minus-two-eight (make-rat 2 -8))
 (print-rat minus-two-eight)
+
+; ex 2.2
+
+(define (make-segment start end)
+  (cons start end))
+
+(define (start-segment x)
+  (car x))
+
+(define (end-segment x)
+  (cdr x))
+
+(define (make-point x y)
+  (cons x y))
+
+(define (x-point point)
+  (car point))
+
+(define (y-point point)
+  (cdr point))
+
+(define (midpoint-segment segment)
+  (make-point
+   (/ (+ (x-point (start-segment segment))
+         (x-point (end-segment segment))) 2)
+   (/ (+ (y-point (start-segment segment))
+         (x-point (end-segment segment))) 2)))
+
+(define (print-point p)
+  (newline)
+  (display "(")
+  (display (x-point p))
+  (display ",")
+  (display (y-point p))
+  (display ")"))
+
+(define cus-segment
+  (make-segment (make-point 0 0)
+                (make-point 10 10)))
+
+; ex 2.3
