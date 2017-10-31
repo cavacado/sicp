@@ -287,3 +287,26 @@
      1.0))
 
 ; ex 1.46...
+(define (iterative-improve f g)
+  (lambda (guess)
+    (let ((next (g guess)))
+      (if (f guess next)
+          next
+          ((iterative-improve f g) next)))))
+
+(define (close-enough-iterative? x y)
+  (< (abs (- x y)) tolerance))
+
+(define (sqrt-iterative-improve x)
+  ((iterative-improve close-enough-iterative?
+                     (average-damp
+                      (lambda (y) (/ x y)))) 1.0))
+
+(define (fixed-point-iterative-improve f first-guess)
+  ((iterative-improve close-enough-iterative?
+                      f) first-guess))
+
+(define (test-iterative-fix x)
+  (fixed-point-iterative-improve (average-damp
+                                  (lambda (y) (/ x y)))
+                                 1.0))
