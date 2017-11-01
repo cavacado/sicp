@@ -92,3 +92,68 @@
   (if (odd? i)
       (cons i (helper l odd?))
       (cons i (helper l even?))))
+
+(define (scale-list items factor)
+  (if (null? items)
+      nil
+      (cons (* (car items) factor)
+            (scale-list (cdr items)
+                        factor))))
+
+(define (map proc items)
+  (if (null? items)
+      nil
+      (cons (proc (car items))
+            (map proc (cdr items)))))
+
+(define (scale-list-new items factor)
+  (map (lambda (x) (* x factor))
+       items))
+
+; ex 2.21
+
+(define (square x)
+  (* x x))
+
+(define (square-list-low items)
+  (if (null? items)
+      nil
+      (cons (square (car items))
+            (square-list-low (cdr items)))))
+
+(define (square-list-high items)
+  (map square items))
+
+; ex 2.22
+(define (square-list-iterative items)
+  (define (iter things answer)
+    (if (null? things)
+        answer
+        (iter (cdr things)
+              (cons (square (car things))
+                    answer))))
+  (iter items nil))
+
+;(square-list-iterative (list 1 2 3 4))
+;(iter (list 1 2 3 4) nil)
+;(iter (list 2 3 4) (cons 1 nil))
+;(iter (list 3 4) (cons 4 (cons 1 nil)))
+;(iter (list 4) (cons 9 (cons 4 (cons 1 nil))))
+;(iter nil (cons 16 (cons 9 (cons 4 (cons 1 nil)))))
+;=> (list 16 9 4 1)
+; order of cons is reversed
+;(iter (list 1 2 3 4) nil)
+;(iter (list 2 3 4) (cons nil 1))
+;(iter (list 3 4) (cons (cons nil 1) 4))
+;(iter (list 4) (cons (cons (cons nil 1) 4) 9))
+;(iter nil (cons (cons (cons (cons nil 1) 4) 9) 16))
+;(cons (cons (cons (cons nil 1) 4 9 16)))
+; swapping cons around doesnt change the fact that cons
+; constructs from the front, the resulting result is not a list
+
+; ex 2.23
+
+(define (for-each proc list)
+  (cond ((not (null? list))
+         (proc (car list))
+         (for-each proc (cdr list)))))
