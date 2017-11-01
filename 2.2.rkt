@@ -38,6 +38,7 @@
       (cons (car list) nil)
       (last-pair (cdr list))))
 
+; ex 2.18
 (define (reverse-new list)
   (if (null? (cdr list))
       list
