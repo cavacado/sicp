@@ -222,4 +222,8 @@
   ;(lambda (f) (lambda (x) (f (((lambda (a) (lambda (b) (a b))) f) x))))
   ;(lambda (f) (lambda (x) (f ((lambda (b) (f b)) x))))
   (lambda (f) (lambda (x) (f (f x)))))
-;....
+
+(define (add-n a b)
+  (lambda (f)
+    (lambda (x)
+      ((a f) ((b f) x)))))
