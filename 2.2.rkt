@@ -157,3 +157,74 @@
   (cond ((not (null? list))
          (proc (car list))
          (for-each proc (cdr list)))))
+
+(define (count-leaves x)
+  (cond ((null? x) 0)
+        ((not (pair? x)) 1)
+        (else (+ (count-leaves (car x))
+                 (count-leaves (cdr x))))))
+
+(define x (cons (list 1 2) (list 3 4)))
+
+; ex 2.24
+
+;(list 1 (list 2 (list 3 4)))
+;(cons 1 (cons (cons 2 (cons (cons 3 (cons 4 nil)) nil)) nil))
+;
+;|---|---|
+;| 1 | | |
+;|---|-|-|
+;    |-|-|---|
+;    | 2 | | |
+;    |---|-|-|
+;        |-|-|---|
+;        | 3 | 4 |
+;        |---|---|
+
+;       (1 (2 (3 4)))
+;      /         \
+;      1       (2 (3 4)
+;                /   \
+;                2    (3 4)
+;                      /  \
+;                      3   4
+
+; ex 2.25
+
+;(car (cdr (car (cdr (cdr (list 1 3 (list 5 7) 9))))))
+;(car (car (list (list 7))))
+;(car
+; (cdr
+;  (car
+;   (cdr
+;    (car
+;     (cdr
+;      (car
+;       (cdr
+;        (car
+;         (cdr
+;          (car
+;           (cdr
+;            (list 1 (list 2 (list 3 (list 4 (list 5 (list 6 7))))))))))))))))))
+
+; ex 2.26
+
+(define z (list 1 2 3))
+(define y (list 4 5 6))
+;(append z y) => (cons 1 (cons 2 (cons 3 (cons 4 (cons 5 (cons 6 nil))))))
+;(cons z y) => (cons
+;               (cons 1 (cons 2 (cons 3 nil)))
+;               (cons 4 (cons 5 (cons 6 nil))))
+;(list z y) => (cons
+;               (cons 1 (cons 2 (cons 3 nil)))
+;               (cons (cons 4 (cons 5 (cons 6 nil))) nil))
+
+; ex 2.27
+
+(define xx
+  (list (list 1 2) (list 3 4)))
+
+(define (deep-reverse list)
+  (if (pair? list)
+      (cons (deep-reverse (car list)) (deep-reverse (cdr list)))
+      list))
