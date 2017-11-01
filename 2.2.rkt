@@ -224,7 +224,13 @@
 (define xx
   (list (list 1 2) (list 3 4)))
 
+(define yy
+  (list (list 3 4) (list 2 5)))
+
+(define xxx
+  (list xx yy))
+
 (define (deep-reverse list)
   (if (pair? list)
-      (cons (deep-reverse (car list)) (deep-reverse (cdr list)))
+      (cons (deep-reverse (car (reverse list))) (deep-reverse (cdr (reverse list))))
       list))
