@@ -227,3 +227,78 @@
   (lambda (f)
     (lambda (x)
       ((a f) ((b f) x)))))
+
+; ex 2.7
+
+(define (add-interval x y)
+  (make-interval (+ (lower-bound x)
+                    (lower-bound y))
+                 (+ (upper-bound x)
+                    (upper-bound y))))
+
+(define (mul-interval x y)
+  (let ((p1 (* (lower-bound x)
+               (lower-bound y)))
+        (p2 (* (lower-bound x)
+               (upper-bound y)))
+        (p3 (* (upper-bound x)
+               (lower-bound y)))
+        (p4 (* (upper-bound x)
+               (upper-bound y))))
+    (make-interval (min p1 p2 p3 p4)
+                   (max p1 p2 p3 p4))))
+
+(define (div-interval x y)
+  (mul-interval x
+                (make-interval
+                 (/ 1.0 (upper-bound y))
+                 (/ 1.0 (lower-bound y)))))
+
+(define (make-interval lower upper)
+  (cons lower upper))
+
+(define (lower-bound x)
+  (car x))
+
+(define (upper-bound x)
+  (cdr x))
+
+; ex 2.8
+; difference of the two intervals could be the difference of the two lower bounds
+; as the lower bound and the difference of the two upper bounds
+; could be the upper bound.
+
+(define (sub-interval x y)
+  (make-interval (- (lower-bound x)
+                    (lower-bound y))
+                 (- (upper-bound x)
+                    (upper-bound y))))
+
+; ex 2.9
+
+(define (width lower upper)
+  (* 0.5 lower upper))
+
+;a => (make-interval x1 y1)
+;b => (make-interval x2 y2)
+;(add-interval a b)
+;=> (make-interval (+ x1 x2)
+;                  (+ y1 y2))
+;=> (make-interval (f (x1+x2, y1+y2))
+;=> (width (make-interval (x1+x2 y1+y2)))
+;=> (* 0.5 (+ x1 x2) (+ y1 y2))
+;=> f (x y) (* 0.5 (+ x y)) // shown
+
+;(mul-interval a b)
+;=> p1 => (* x1 x2)
+;=> p2 => (* x1 y2)
+;=> p3 => (* x2 y1)
+;=> p4 => (* y1 y2)
+;(make-interval ((min p1 p2 p3 p4) (max p1 p2 p3 p4)) /=> (f (?? ??))
+; sub x1 = 1 x2 = 2 y1 = 2 y2 = 3
+; p1 => 2 p2 => 3 p3 => 4 p4 => 6
+;(make-interval 2 6)
+;(width (make-interval 2 6))
+; -> 4 /=> f(w1 w2) /=> false
+
+; ex 2.10
