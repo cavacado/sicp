@@ -81,3 +81,14 @@
 ; since it computes all possible combintations
 
 ; ex 2.20
+
+(define (same-parity i . l)
+  (define (helper list predicate)
+    (cond ((null? list)
+           nil)
+          ((predicate (car list))
+           (cons (car list) (helper (cdr list) predicate)))
+          (else (helper (cdr list) predicate))))
+  (if (odd? i)
+      (cons i (helper l odd?))
+      (cons i (helper l even?))))
