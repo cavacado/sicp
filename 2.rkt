@@ -249,10 +249,12 @@
                    (max p1 p2 p3 p4))))
 
 (define (div-interval x y)
-  (mul-interval x
-                (make-interval
-                 (/ 1.0 (upper-bound y))
-                 (/ 1.0 (lower-bound y)))))
+  (if (<= (* (lower-bound y) (upper-bound y)) 0)
+      (error "cannot divide interval with span of 0")
+      (mul-interval x
+                    (make-interval
+                     (/ 1.0 (upper-bound y))
+                     (/ 1.0 (lower-bound y))))))
 
 (define (make-interval lower upper)
   (cons lower upper))
@@ -301,4 +303,75 @@
 ;(width (make-interval 2 6))
 ; -> 4 /=> f(w1 w2) /=> false
 
-; ex 2.10
+; ex 2.11
+
+;; copied because ben diddle is a dick
+(define (mul-interval-new x y) 
+   ;; endpoint-sign returns: 
+   ;;     +1 if both endpoints non-negative, 
+   ;;     -1 if both negative, 
+   ;;      0 if opposite sign 
+   (define (endpoint-sign i) 
+     (cond ((and (>= (upper-bound i) 0) 
+                 (>= (lower-bound i) 0)) 
+            1) 
+           ((and (< (upper-bound i) 0) 
+                 (< (lower-bound i) 0)) 
+            -1) 
+           (else 0))) 
+  
+   (let ((es-x (endpoint-sign x)) 
+         (es-y (endpoint-sign y)) 
+         (x-up (upper-bound x)) 
+         (x-lo (lower-bound x)) 
+         (y-up (upper-bound y)) 
+         (y-lo (lower-bound y))) 
+  
+     (cond ((> es-x 0) ;; both x endpoints are +ve or 0 
+            (cond ((> es-y 0) 
+                   (make-interval (* x-lo y-lo) (* x-up y-up))) 
+                  ((< es-y 0) 
+                   (make-interval (* x-up y-lo) (* x-lo y-up))) 
+                  (else 
+                   (make-interval (* x-up y-lo) (* x-up y-up))))) 
+  
+           ((< es-x 0) ;; both x endpoints are -ve 
+            (cond ((> es-y 0) 
+                   (make-interval (* x-lo y-up) (* x-up y-lo))) 
+                  ((< es-y 0) 
+                   (make-interval (* x-up y-up) (* x-lo y-lo))) 
+                  (else 
+                   (make-interval (* x-lo y-up) (* x-lo y-lo))))) 
+  
+           (else  ;; x spans 0 
+            (cond ((> es-y 0) 
+                   (make-interval (* x-lo y-up) (* x-up y-up))) 
+                  ((< es-y 0) 
+                   (make-interval (* x-up y-lo) (* x-lo y-lo))) 
+                  (else 
+                   ;; Both x and y span 0 ... need to check values 
+                   (make-interval (min (* x-lo y-up) (* x-up y-lo)) 
+                                  (max (* x-lo y-lo) (* x-up y-up)))))))))
+
+(define (make-center-width c w)
+  (make-interval (- c w) (+ c w)))
+
+(define (center i)
+  (/ (+ (lower-bound i)
+        (upper-bound i))
+     2))
+
+(define (width-new i)
+  (/ (- (upper-bound i)
+        (lower-bound i))
+     2))
+
+; this is wrong though
+;(define (make-center-percent c p)
+;  (make-interval (- c (* p c)) (+ c (* p c))))
+;
+;(define (percent i)
+;  (* (/ (- (upper-bound i)
+;           (center i))
+;        (center i)) 100))
+;... come back another day i guess
