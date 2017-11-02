@@ -234,3 +234,11 @@
   (if (pair? list)
       (cons (deep-reverse (car (reverse list))) (deep-reverse (cdr (reverse list))))
       list))
+
+; ex 2.28
+
+(define (fringe tree)
+  (cond ((pair? tree) (append (fringe (car tree))
+                              (fringe (cdr tree))))
+        ((null? tree) nil)
+        (else (list tree))))
