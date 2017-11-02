@@ -242,3 +242,56 @@
                               (fringe (cdr tree))))
         ((null? tree) nil)
         (else (list tree))))
+
+; ex 2.29
+
+(define (make-mobile left right)
+  (list left right))
+
+(define (make-branch length structure)
+  (list length structure))
+
+(define (left-branch mobile)
+  (car mobile))
+
+(define (right-branch mobile)
+  (car (cdr mobile)))
+
+(define (branch-length mobile)
+  (cond ((null? mobile) 0)
+        ((pair? mobile) (+ (branch-length (car mobile))
+                           (branch-length (cdr mobile))))
+        (else 1)))
+
+(define (branch-structure mobile)
+  (cond ((null? mobile) nil)
+        ((pair? mobile) (append (branch-structure (car mobile))
+                               (branch-structure (cdr mobile))))
+        (else (list mobile))))
+
+(define (total-weight mobile)
+  (define structure (branch-structure mobile))
+  (define (worker struct)
+    (if (null? struct)
+        0
+        (+ (car struct)
+           (worker (cdr struct)))))
+  (worker structure))
+
+(define (balanced? mobile)
+  (define (torque branch)
+    (* (total-weight branch)
+       (branch-length branch)))
+  (= (torque (left-branch mobile))
+     (torque (right-branch mobile))))
+
+(define zz
+  (list (list 3 5) (list 4 4)))
+
+(define (make-mobile-new left right)
+  (cons left right))
+
+(define (make-branch-new length structure)
+  (cons length structure))
+
+; quite a fair bit since list a b /= cons a b
