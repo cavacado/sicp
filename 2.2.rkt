@@ -339,17 +339,14 @@
   (tree-map square tree))
 
 ; ex 2.32
-; ????
+
 (define (subsets s)
   (if (null? s)
       (list nil)
       (let ((rest (subsets (cdr s))))
-        (append rest (map
-                      (lambda (sub-set)
-                        (if (pair? sub-set)
-                            (subsets sub-set)
-                            (list 1)))
-                      rest)))))
+        (append rest (map (lambda (x)
+                            (cons (car s) x))
+                          rest)))))
 
 (define answer
   (list (list nil)
