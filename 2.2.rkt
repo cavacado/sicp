@@ -266,7 +266,7 @@
 (define (branch-structure mobile)
   (cond ((null? mobile) nil)
         ((pair? mobile) (append (branch-structure (car mobile))
-                               (branch-structure (cdr mobile))))
+                                (branch-structure (cdr mobile))))
         (else (list mobile))))
 
 (define (total-weight mobile)
@@ -295,3 +295,68 @@
   (cons length structure))
 
 ; quite a fair bit since list a b /= cons a b
+
+(define (scale-tree tree factor)
+  (cond ((null? tree) nil)
+        ((not (pair? tree))
+         (* tree factor))
+        (else
+         (cons (scale-tree (car tree) factor)
+               (scale-tree (cdr tree) factor)))))
+
+(define (scale-tree-map tree factor)
+  (map (lambda (sub-tree)
+         (if (pair? sub-tree)
+             (scale-tree sub-tree factor)
+             (* sub-tree factor)))
+       tree))
+
+; ex 2.30
+
+(define (square-tree tree)
+  (cond ((null? tree) nil)
+        ((pair? tree) (cons (square-tree (car tree))
+                            (square-tree (cdr tree))))
+        (else (square tree))))
+
+(define (square-tree-map tree)
+  (map (lambda (sub-tree)
+         (if (pair? sub-tree)
+             (square-tree-map sub-tree)
+             (square sub-tree)))
+         tree))
+
+; ex 2.31
+
+(define (tree-map proc tree)
+  (map (lambda (sub-tree)
+         (if (pair? sub-tree)
+             (tree-map proc sub-tree)
+             (proc sub-tree)))
+       tree))
+
+(define (square-tree-map-new tree)
+  (tree-map square tree))
+
+; ex 2.32
+; ????
+(define (subsets s)
+  (if (null? s)
+      (list nil)
+      (let ((rest (subsets (cdr s))))
+        (append rest (map
+                      (lambda (sub-set)
+                        (if (pair? sub-set)
+                            (subsets sub-set)
+                            (list 1)))
+                      rest)))))
+
+(define answer
+  (list (list nil)
+        (list 3)
+        (list 2)
+        (list 2 3)
+        (list 1)
+        (list 1 3)
+        (list 1 2)
+        (list 1 2 3)))
