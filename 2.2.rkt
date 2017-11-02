@@ -479,3 +479,13 @@
                            ((pair? sub-tree) (count-leaves-recursive sub-tree))
                            (else 1)))
                    tree)))
+
+; ex 2.36
+
+(define (accumulate-n op init seqs)
+  (if (null? (car seqs))
+      nil
+      (cons (accumulate op init (map car seqs))
+            (accumulate-n op init (map cdr seqs)))))
+
+; ex 2.37
