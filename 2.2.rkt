@@ -456,3 +456,26 @@
                 (* (+ this-coeff higher-terms) x))
               0
               coefficient-sequence) x))
+
+; ex 2.35
+
+;(define (count-leaves x)
+;  (cond ((null? x) 0)
+;        ((not (pair? x)) 1)
+;        (else (+ (count-leaves (car x))
+;                 (count-leaves (cdr x))))))
+
+(define (count-leaves-acc tree)
+  (accumulate (lambda (x y)
+                (+ 1 y))
+              0
+              (enumerate-tree tree)))
+
+(define (count-leaves-recursive tree)
+  (accumulate +
+              0
+              (map (lambda (sub-tree)
+                     (cond ((null? sub-tree) 0)
+                           ((pair? sub-tree) (count-leaves-recursive sub-tree))
+                           (else 1)))
+                   tree)))
