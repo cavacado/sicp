@@ -489,3 +489,37 @@
             (accumulate-n op init (map cdr seqs)))))
 
 ; ex 2.37
+
+(define (dot-product v w)
+  (accumulate + 0 (map * v w)))
+
+(define (list-x-list l1 l2)
+  (if (null? l1)
+      0
+      (+ (* (car l1) (car l2))
+         (list-x-list (cdr l1)
+                      (cdr l2)))))
+
+(define (matrix-*-vector m v)
+  (map (lambda (row)
+         (list-x-list row v))
+       m))
+
+(define (transpose mat)
+  (accumulate-n cons
+                nil
+                mat))
+
+(define (row-x-cols row cols)
+  (if (null? cols)
+      nil
+      (cons (list-x-list row (car cols))
+            (row-x-cols row (cdr cols)))))
+
+(define (matrix-*-matrix m n)
+  (let ((cols (transpose n)))
+    (map (lambda (row)
+           (row-x-cols row cols))
+         m)))
+
+; ex 2.38
