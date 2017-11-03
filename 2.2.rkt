@@ -653,4 +653,48 @@
             (= (accumulate + 0 triple) s))
           (unique-triples n)))
 
-; ex 2.42
+; ex 2.42 come back another day when youre less sadistic
+
+(define (queens board-size)
+  (define (queen-cols k)
+    (if (= k 0)
+        (list empty-board)
+        (filter (lambda (positions)
+                  (safe? k positions))
+                (flatmap (lambda (rest-of-queens)
+                           (map (lambda (new-row)
+                                  (adjoin-position new-row
+                                                   k
+                                                   rest-of-queens))
+                                (enumerate-interval 1 board-size)))
+                         (queen-cols (- k 1))))))
+  (queen-cols board-size))
+
+(define (adjoin-position row k roq)
+  (cons row roq))
+
+(define empty-board nil)
+
+(define (safe? k positions)
+  (define queenPos (car positions))
+  (define (safe-iter top bot remain)
+    (cond ((null? remain) #t)
+          ((or (= (car remain) queenPos)
+               (= (car remain) top)
+               (= (car remain) bot))
+           #f)
+          (else (safe-iter (- top 1)
+                           (+ bot 1)
+                           (cdr remain)))))
+  (safe-iter (- queenPos 1)
+             (+ queenPos 1)
+             (cdr positions)))
+
+; ex 2.43
+; in the original soln, queen-cols is called once for each column
+; in the board. this is an expensive procedure to call, since
+; it generates the sequence of all possible ways to place k queens
+; in k columns, by moving queen-cols so it gets called by flatmap,
+; we're transforming a linear recursive process to a tree-recursive
+; process. since a tree-recursive process grows exponentially,
+; the time take should be T^ board-size.
