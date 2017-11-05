@@ -797,13 +797,13 @@
 ; ex 2.46
 
 (define (make-vect x y)
-  (list x y))
+  (cons x y))
 
 (define (xcor-vect vect)
   (car vect))
 
 (define (ycor-vect vect)
-  (car (cdr vect)))
+  (cdr vect))
 
 (define (add-vect v1 v2)
   (make-vect (+ (xcor-vect v1)
@@ -846,3 +846,42 @@
 
 (define (edge2-frame-v2 frame)
   (cdr (cdr frame)))
+
+;(define (segments->painter segment-list)
+;  (lambda (frame)
+;    (for-each
+;     (lambda (segment)
+;       (draw-line
+;        ((frame-coord-map frame)
+;         (start-segment segment))
+;        ((frame-coord-map frame)
+;         (end-segment segment))))
+;     segment-list)))
+
+; ex 2.48
+
+(define make-segment cons)
+(define start-segment car)
+(define end-segment cdr)
+
+; ex 2.49
+
+(let ((tl (make-vect 0 1))
+      (tr (make-vect 1 1))
+      (bl (make-vect 0 0))
+      (br (make-vect 1 0)))
+  (let ((mp1 (scale-vect 0.5 (add-vect tl tr)))
+        (mp2 (scale-vect 0.5 (add-vect bl tl)))
+        (mp3 (scale-vect 0.5 (add-vect bl br)))
+        (mp4 (scale-vect 0.5 (add-vect br tr))))
+    (segments->painter (list (make-segment bl tl)
+                             (make-segment tl tr)
+                             (make-segment tr br)
+                             (make-segment br bl)))
+    (segments->painter (list (make-segment bl tr)
+                             (make-segment tl br)))
+    (segments->painter (list (make-segment mp1 mp2)
+                           (make-segment mp2 mp3)
+                           (make-segment mp4 mp1)))))
+
+; skip wave painter becoz lack of info
