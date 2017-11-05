@@ -881,7 +881,95 @@
     (segments->painter (list (make-segment bl tr)
                              (make-segment tl br)))
     (segments->painter (list (make-segment mp1 mp2)
-                           (make-segment mp2 mp3)
-                           (make-segment mp4 mp1)))))
+                             (make-segment mp2 mp3)
+                             (make-segment mp4 mp1)))))
 
 ; skip wave painter becoz lack of info
+
+(define (transform-painter-new
+         painter origin corner1 corner2)
+  (lambda (frame)
+    (let ((m (frame-coord-map frame)))
+      (let ((new-origin (m origin)))
+        (painter (make-frame new-origin
+                             (sub-vect (m corner1)
+                                       new-origin)
+                             (sub-vect (m corner2)
+                                       new-origin)))))))
+
+(define (flip-vert-new painter)
+  (transform-painter-new painter
+                         (make-vect 0.0 1.0)
+                         (make-vect 1.0 1.0)
+                         (make-vect 0.0 0.0)))
+
+(define (shrink-to-upper-right-new painter)
+  (transform-painter-new painter
+                         (make-vect 0.5 0.5)
+                         (make-vect 1.0 0.5)
+                         (make-vect 0.5 1.0)))
+
+(define (rotate90-new painter)
+  (transform-painter-new painter
+                         (make-vect 1.0 0.0)
+                         (make-vect 1.0 1.0)
+                         (make-vect 0.0 0.0)))
+
+(define (squash-inwards-new painter)
+  (transform-painter-new painter
+                         (make-vect 0.0 0.0)
+                         (make-vect 0.65 0.35)
+                         (make-vect 0.35 0.65)))
+
+(define (beside-new painter1 painter2)
+  (let ((split-point (make-vect 0.5 0.0)))
+    (let ((paint-left (transform-painter-new painter1
+                                             (make-vect 0.0 0.0)
+                                             split-point
+                                             (make-vect 0.0 1.0)))
+          (paint-right (transform-painter-new painter2
+                                              split-point
+                                              (make-vect 1.0 0.0)
+                                              (make-vect 0.5 1.0))))
+      (lambda (frame)
+        (paint-left frame)
+        (paint-right frame)))))
+
+; ex 2.50
+
+(define (flip-horiz-new painter)
+  ((transform-painter (make-vect 1.0 0.0)
+                      (make-vect 0.0 0.0)
+                      (make-vect 1.0 1.0)) painter))
+
+(define (cc-180 painter)
+  ((transform-painter (make-vect 1.0 1.0)
+                      (make-vect 0.0 1.0)
+                      (make-vect 1.0 0.0)) painter))
+
+(define (cc-270 painter)
+  ((transform-painter (make-vect 0.0 1.0)
+                      (make-vect 0.0 0.0)
+                      (make-vect 1.0 1.0)) painter))
+
+; ex 2.51
+
+(define (below-new painter1 painter2)
+  (let ((split-point (make-vect 0.0 0.5)))
+    (let ((paint-bot (transform-painter-new painter1
+                                             (make-vect 0.0 0.0)
+                                             split-point
+                                             (make-vect 1.0 0.0)))
+          (paint-up (transform-painter-new painter2
+                                              split-point
+                                              (make-vect 1.0 0.5)
+                                              (make-vect 0.0 1.0))))
+      (lambda (frame)
+        (paint-bot frame)
+        (paint-up frame)))))
+
+(define (below-rotate painter1 painter2)
+  (rotate90 (beside-new (cc-270 painter1)
+                        (cc-270 painter2))))
+
+; skip ex 2.52
