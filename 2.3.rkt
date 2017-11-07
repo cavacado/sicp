@@ -234,3 +234,49 @@
 
 ; in the case of intersection-set-dup the process should remain unchanged,
 ; but because there are duplicate elements, it might take a little longer time.
+
+(define (element-of-set-ordered? x set)
+  (cond ((null? set) false)
+        ((= x (car set)) true)
+        ((< x (car set)) false)
+        (else (element-of-set-ordered? x (cdr set)))))
+
+(define (intersection-set-ordered set1 set2)
+  (if (or (null? set1) (null? set2))
+      '()
+      (let ((x1 (car set1)) (x2 (car set2)))
+        (cond ((= x1 x2)
+               (cons x1 (intersection-set-ordered (cdr set1)
+                                                  (cdr set2))))
+              ((< x1 x2) (intersection-set-ordered (cdr set1)
+                                                   set2))
+              ((< x2 x1) (intersection-set-ordered set1
+                                                   (cdr set2)))))))
+
+; ex 2.61
+
+(define (adjoin-set-ordered x set)
+  (if (element-of-set-ordered? x set)
+      set
+      (cons x set)))
+
+; in adjoin-set-ordered, at the worst case scenario, the algorithm will
+; scan through the entire set to determine whether x is in the set
+; on the other hand, will will be able to stop searching near the begining of
+; the algorithm if we search for items in different sizes.
+; so on avg we will reduce the no. of steps by 2
+
+; ex 2.62
+
+(define (union-set-ordered set1 set2)
+  (cond ((null? set2) set1)
+        ((null? set1) set2)
+        (else
+         (let ((x1 (car set1)) (x2 (car set2)))
+           (cond ((= x1 x2)
+                  (cons x1 (union-set-ordered (cdr set1)
+                                              (cdr set2))))
+                 ((< x1 x2) (cons x1 (union-set-ordered (cdr set1)
+                                                        set2)))
+                 ((< x2 x1) (cons x2 (union-set-ordered set1
+                                                        (cdr set2)))))))))
