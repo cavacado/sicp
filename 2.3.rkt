@@ -16,12 +16,19 @@
 
 ; ex 2.54
 
-(define (equal? l1 l2)
+(define (equal-cus? l1 l2)
   (cond ((and (null? l1) (null? l2)) #t)
         ((eq? (car l1) (car l2)) (equal? (cdr l1) (cdr l2)))
         ((and (list? (car l1)) (list? (car l2))) (and (equal? (car l1) (car l2))
                                                       (equal? (cdr l1) (cdr l2))))
         (else #f)))
+
+(define (equal? list1 list2)
+   (cond ((and (not (pair? list1)) (not (pair? list2)))
+          (eq? list1 list2))
+         ((and (pair? list1) (pair? list2))
+          (and (equal? (car list1) (car list2)) (equal? (cdr list1) (cdr list2))))
+         (else false)))
 
 ; ex 2.55
 
@@ -177,3 +184,30 @@
         (else (list (car exp)
                     (cadr exp)
                     (preprocess (cdr (memq (cadr exp) exp)))))))
+
+(define (element-of-set? x set)
+  (cond ((null? set) false)
+        ((equal? x (car set)) true)
+        (else (element-of-set? x (cdr set)))))
+
+(define (adjoin-set x set)
+  (if (element-of-set? x set)
+      set
+      (cons x set)))
+
+(define (intersection-set set1 set2)
+  (cond ((or (null? set1) (null? set2))
+         '())
+        ((element-of-set? (car set1) set2)
+         (cons (car set1)
+               (intersection-set (cdr set1)
+                                 set2)))
+        (else (intersection-set (cdr set1)
+                                set2))))
+
+; ex 2.59
+
+(define (union-set set1 set2)
+  (cond ((or (null? set1) (null? set2)) set2)
+        (else (union-set (cdr set1)
+                         (adjoin-set (car set1) set2)))))
