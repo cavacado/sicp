@@ -211,3 +211,26 @@
   (cond ((or (null? set1) (null? set2)) set2)
         (else (union-set (cdr set1)
                          (adjoin-set (car set1) set2)))))
+
+; ex 2.60
+
+; element-of-set-dup? should be the same, but since the set that it
+; checks against has more elements, this will increase the processing time
+
+(define (adjoin-set-dup x set)
+  (cons x set))
+
+; in the case of adjoin-set-dup, it should be faster since it does not
+; go through the list to determine whether the element can added or not
+; it just cons infront of the existing list
+
+(define (union-set-dup set1 set2)
+  (append set1 set2))
+
+; in the case of union-set-dup, the process does not need to iterate over
+; the set and check whether it is duplicte or not
+; the process can be reduced to a single append, thus greatly increasing
+; processing speed
+
+; in the case of intersection-set-dup the process should remain unchanged,
+; but because there are duplicate elements, it might take a little longer time.
