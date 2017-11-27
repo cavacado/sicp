@@ -557,3 +557,21 @@
 ; 2nd part in notebook
 ; most frequent -> 1
 ; least frequent -> 10 - 1 = 9
+
+; ex 2.72
+
+
+; I think the solution depends on how encode-symbol is implemented.
+; In an efficient implementation, only one branch need to be searched to find the most frequent symbol.
+; And that branch only has one symbol.
+; Therefore, to encode the most frequent symbol,
+; the order of growth is actually O(1).
+
+; As for encoding the least frequent symbol,
+; we need to search both left and right branches at every node.
+; Since we need to search n-1 nodes,
+; the order of growth is O(n) + O(n-1) + ... + O(1), which is O(n^2).
+
+; Note that the solution for most frequent symbol is true
+; for all cases, while the solution for least frequent symbol
+; is only true for the special case of 2.71.
