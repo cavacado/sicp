@@ -450,3 +450,28 @@
                                                   (make-leaf 'C 1)))))
 
 (define sample-message '(0 1 1 0 0 1 0 1 0 1 1 1 0))
+
+; ex 2.68
+
+(define (in-list? symbol list)
+  (cond ((null? list) #f)
+        ((eq? symbol (car list)) #t)
+        (else (in-list? symbol (cdr list)))))
+
+(define (encode message tree)
+  (if (null? message)
+      '()
+      (append (encode-symbol (car message)
+                             tree)
+              (encode (cdr message) tree))))
+
+(define (encode-symbol symbol tree)
+  (define (encode-symbol-1 symbol tree)
+    (cond ((leaf? tree) '())
+          ((eq? symbol (symbol-leaf (left-branch-code tree))) (list 0))
+          (else (cons 1
+                      (encode-symbol-1 symbol
+                                       (right-branch-code tree))))))
+  (if (in-list? symbol (symbols tree))
+      (encode-symbol-1 symbol tree)
+      #f))
