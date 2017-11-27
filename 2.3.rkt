@@ -349,3 +349,104 @@
 ; if its a balanced tree, then both grow at the same speed.
 
 ; ex 2.64
+
+;; close to 4 weeks without continuing sicp due to work / life commitments
+;; start on next section, skipping 2 questions.
+
+;(define (lookup given-key set-of-records)
+;  (cond ((null? set-of-records) false)
+;        ((equal? given-key
+;                 (key (car set-of-records)))
+;         (car set-of-records))
+;        (else (lookup given-key
+;                      (cdr set-of-records)))))
+
+; ex 2.66
+;(define (lookup given-key set-of-records)
+;  (cond ((null? set-of-records) false)
+;        ((= (entry set-of-records) given-key)
+;         (entry set-of-records))
+;        ((< (entry set-of-records) given-key)
+;         (lookup given-key (left-branch set-of-records)))
+;        ((> (entry set-of-records) given-key)
+;         (lookup given-key (right-branch set-of-records)))))
+
+(define (make-leaf symbol weight)
+  (list 'leaf symbol weight))
+
+(define (leaf? object)
+  (eq? (car object) 'leaf))
+
+(define (symbol-leaf x) (cadr x))
+
+(define (weight-leaf x) (caddr x))
+
+(define (make-code-tree left right)
+  (list left
+        right
+        (append (symbols left)
+                (symbols right))
+        (+ (weight left) (weight right))))
+
+(define (append list1 list2)
+  (if (null? list1)
+      list2
+      (cons (car list1)
+            (append (cdr list1)
+                    list2))))
+
+(define (left-branch-code tree) (car tree))
+
+(define (right-branch-code tree) (cadr tree))
+
+(define (symbols tree)
+  (if (leaf? tree)
+      (list (symbol-leaf tree))
+      (caddr tree)))
+
+(define (weight tree)
+  (if (leaf? tree)
+      (weight-leaf tree)
+      (cadddr tree)))
+
+(define (decode bits tree)
+  (define (decode-1 bits current-branch)
+    (if (null? bits)
+        '()
+        (let ((next-branch (choose-branch (car bits)
+                                          current-branch)))
+          (if (leaf? next-branch)
+              (cons (symbol-leaf next-branch)
+                    (decode-1 (cdr bits) tree))
+              (decode-1 (cdr bits)
+                        next-branch)))))
+  (decode-1 bits tree))
+
+(define (choose-branch bit branch)
+  (cond ((= bit 0) (left-branch-code branch))
+        ((= bit 1) (right-branch-code branch))
+        (else (error "bad bit: CHOOSE-BRANCH" bit))))
+
+(define (adjoin-set-code x set)
+  (cond ((null? set) (list x))
+        ((< (weight x) (weight (car set)))
+         (cons x set))
+        (else
+         (cons (car set)
+               (adjoin-set-code x (cdr set))))))
+
+(define (make-leaf-set pairs)
+  (if (null? pairs)
+      '()
+      (let ((pair (car pairs)))
+        (adjoin-set-code (make-leaf (car pair)
+                                    (cadr pair))
+                         (make-leaf-set (cdr pairs))))))
+
+(define sample-tree
+  (make-code-tree (make-leaf 'A 4)
+                  (make-code-tree (make-leaf 'B 2)
+                                  (make-code-tree (make-leaf 'D 1)
+                                                  (make-leaf 'C 1)))))
+
+(define sample-message '(0 1 1 0 0 1 0 1 0 1 1 1 0))
