@@ -475,3 +475,16 @@
   (if (in-list? symbol (symbols tree))
       (encode-symbol-1 symbol tree)
       #f))
+
+; ex 2.69
+
+(define (generate-huffman-tree pairs)
+  (successive-merge (make-leaf-set pairs)))
+
+(define (successive-merge x)
+  (define (successive-merge-1 y)
+    (cond ((null? (cdr y)) (car y))
+          (else (make-code-tree (car y)
+                                (successive-merge-1 (cdr y))))))
+  (let ((inter (reverse x)))
+    (successive-merge-1 inter)))
