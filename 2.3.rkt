@@ -530,3 +530,30 @@
 ;; 87 bits are required for encoding
 ;; length of rock song = 36
 ;; therefore the smallest no would be 36 * 3 == 108 bits required
+
+; ex 2.71
+
+;                         x  ({A B C D E} 31)
+;                        / \
+;                       /   \
+;                      /     \
+;                   (E 16)   ({A B C D} 15)
+;                                  / \
+;                                 /   \
+;                                /     \
+;                              (D 8)   ({A B C} 7)
+;                                           / \
+;                                          /   \
+;                                         /     \
+;                                       (C 4)   ({A B} 3)
+;                                                  / \
+;                                                 /   \
+;                                                /     \
+;                                              (B 2)   (A 1)
+
+; most frequent -> 1
+; least frequent -> length of tree = 5 - 1 = 4
+
+; 2nd part in notebook
+; most frequent -> 1
+; least frequent -> 10 - 1 = 9
