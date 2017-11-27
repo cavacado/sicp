@@ -488,3 +488,45 @@
                                 (successive-merge-1 (cdr y))))))
   (let ((inter (reverse x)))
     (successive-merge-1 inter)))
+
+; ex 2.70
+
+(define rock-song-tree
+  (generate-huffman-tree (list '(A 2)
+                               '(BOOM 1)
+                               '(GET 2)
+                               '(JOB 2)
+                               '(NA 16)
+                               '(SHA 3)
+                               '(YIP 9)
+                               '(WAH 1))))
+
+(define rock-song-line1
+  '(GET A JOB))
+
+(define rock-song-line2
+  '(SHA NA NA NA NA NA NA NA NA))
+
+(define rock-song-line3
+  '(WAH YIP YIP YIP YIP))
+
+(define rock-song-line4
+  '(YIP YIP YIP YIP YIP))
+
+(define rock-song-line5
+  '(SHA BOOM))
+
+(define rock-song
+  (append (append (append rock-song-line1
+                          rock-song-line2)
+                  (append rock-song-line1
+                          rock-song-line2))
+          (append (append rock-song-line3
+                          rock-song-line4)
+                  rock-song-line5)))
+
+(length (encode rock-song rock-song-tree))
+
+;; 87 bits are required for encoding
+;; length of rock song = 36
+;; therefore the smallest no would be 36 * 3 == 108 bits required
