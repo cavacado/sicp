@@ -252,3 +252,144 @@
 ; for new operations, data-directed programming should be more appropriate
 ; for new types, message-passing programming should be more
 ; appropriate
+
+(define (make-sum addend augend)
+  (list '+ addend augend))
+
+(define (sum-exp? e)
+  (and (pair? e) (eq? (car e) '+)))
+
+(define (sum-addend sum) (cadr sum))
+
+(define (sum-augend sum) (caddr sum))
+
+(define (eval-1 exp)
+  (cond ((number? exp) exp)
+        ((sum-exp? exp) (+ (eval-1 (sum-addend exp))
+                           (eval-1 (sum-augend exp))))
+        (else (error "unknown expression " exp))))
+
+(define (make-range-2 min max)
+  (list min max))
+
+(define range-min-2 car)
+(define range-max-2 cadr)
+
+(define (range-add-2 r1 r2)
+  (make-range-2 (+ (range-min-2 r1)
+                   (range-min-2 r2))
+                (+ (range-max-2 r1)
+                   (range-max-2 r2))))
+
+; (define (eval-2 exp)
+;   (cond ((number? exp) exp)
+;         ((sum-exp? exp)
+;           (let ((v1 (eval-2 (sum-addend exp)))
+;                 (v2 (eval-2 (sum-augend exp))))
+;             (if (and (number? v1) (number? v2))
+;                 (+ v1 v2)
+;                 (range-add-2 v1 v2))))
+;         ((pair? exp) exp)
+;         (else (error "unknown exp " exp))))
+
+(define constant-tag 'const)
+
+(define (make-constant val)
+  (list constant-tag val))
+
+(define (constant-exp? e)
+  (and (pair? e) (eq? (car e) constant-tag)))
+
+(define constant-val cadr)
+
+(define (constant-add exp1 exp2)
+  (make-constant
+    (+ (constant-val exp1) (constant-val exp2))))
+
+(define (eval-3 exp)
+  (cond ((constant-exp? exp) (constant-val exp))
+        ((sum-exp? exp)
+          (+ (eval-3 (sum-addend exp))
+             (eval-3 (sum-augend exp))))
+        (else (error "unknown expr type: " exp))))
+
+(define (eval-4 exp)
+  (cond ((constant-exp? exp) exp)
+        ((sum-exp? exp)
+          (constant-add (eval-4 (sum-addend exp))
+                        (eval-4 (sum-augend exp))))
+        (else (error "unknown expr type: " exp))))
+
+(define range-tag 'range)
+
+(define (make-range min max)
+  (list range-tag min max))
+
+(define (range-exp? e)
+  (and (pair? e) (eq? (car e) range-tag)))
+
+(define range-min cadr)
+(define range-max caddr)
+
+(define (range-add r1 r2)
+  (make-range (+ (range-min r1)
+                 (range-min r2))
+              (+ (range-max r1)
+                 (range-max r2))))
+
+(define (val2range val)
+  (make-range 0 val))
+
+(define (eval-5 exp)
+  (cond ((constant-exp? exp) exp)
+        ((range-exp? exp) exp)
+        ((sum-exp? exp)
+         (let ((v1 (eval-5 (sum-addend exp)))
+               (v2 (eval-5 (sum-augend exp))))
+          (if (and (constant-exp? v1)
+                   (constant-exp? v2))
+              (constant-add v1 v2)
+              (range-add (val2range v1)
+                         (val2range v2)))))
+        (else (error "unknown expr type: " exp))))
+
+(define (value-exp? v)
+  (or (constant-exp? v) (range-exp? v)))
+
+(define (value-add-6 v1 v2)
+  (if (and (constant-exp? v1) (constant-exp? v2))
+           (constant-add v1 v2)
+           (range-add (val2range v1)
+                      (val2range v2))))
+
+(define (eval-6 exp)
+  (cond ((value-exp? exp) exp)
+        ((sum-exp? exp)
+         (value-add-6 (eval-6 (sum-addend exp))
+                      (eval-6 (sum-augend exp))))
+        (else (error "unknown expr type: " exp))))
+
+(define limited-tag 'limited)
+
+(define (limited-exp? e)
+  (eq? 'limited (car e)))
+
+(define (make-limited-precision val err)
+  (list limited-tag val err))
+
+(define (eval-7 exp)
+  (cond ((value-exp? exp) exp)
+        ((limited-exp? exp) exp)
+        ((sum-exp? exp)
+         (value-add-6 (eval-7 (sum-addend exp))
+                      (eval-7 (sum-augend exp))))
+        (else (error "unknown expr type: " exp))))
+
+(define (value-add-7 v1 v2)
+  (cond ((and (constant-exp? v1) (constant-exp? v2))
+          (constant-add v1 v2))
+        ((and (value-exp? v1) (value-exp? v2))
+          (range-add (val2range v1)
+                     (val2range v2)))
+        (else
+          (error "unknown exp: " v1 " or" v2))))
