@@ -220,7 +220,8 @@
 ; to retrieve the record
 
 ; 4.
-; ?
+; company needs to install record and salary generic procedures into
+; the lookup table
 
 ;(define (make-from-real-imag-column x y)
 ;  (define (dispatch op)
@@ -248,3 +249,6 @@
 ;  dispatch)
 
 ; ex 2.76
+; for new operations, data-directed programming should be more appropriate
+; for new types, message-passing programming should be more
+; appropriate
