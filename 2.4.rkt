@@ -183,7 +183,7 @@
 ;(define (exponentiation-deriv expr var)
 ;  (make-product (exponent expr)
 ;                (make-product
-;                 (make-exponentiation (bae expr)
+;                 (make-exponentiation (base expr)
 ;                                      (make-sum (exponent expr) -1))
 ;                 (deriv (base expr) var))))
 ;(define (exponent expr)
@@ -201,3 +201,50 @@
 ; the order of arguments in the procedure 'put
 
 ; ex 2.74
+
+; quick answers because uncomfortable to write code w/o
+; any means to test it
+
+; 1.
+; get-record should just return the '(addressx salaryx)
+
+; 2.
+; get-salary should be structured cadr of get-record
+; get-record should return the contents '(addressx salaryx)
+; cadr would then return the 2nd element, which is the salary required.
+
+; 3.
+; each individual division's files should be tagged with a label
+; eg '('div1 namex '(adressx salaryx))
+; find-employee-record then should expect a tag and a name to be able
+; to retrieve the record
+
+; 4.
+; ?
+
+;(define (make-from-real-imag-column x y)
+;  (define (dispatch op)
+;    (cond ((eq? op 'real-part) x)
+;          ((eq? op 'imag-part) y)
+;          ((eq? op 'magnitude)
+;           (sqrt (+ (square x) (square y))))
+;          ((eq? op 'angle) (atan y x))
+;          (else
+;           (error "Unknown op: MAKE-FROM-REAL-IMAG" op))))
+;  dispatch)
+
+; ex 2.75
+
+;(define (make-from-mag-ang-column x y)
+;  (define (dispatch op)
+;    (cond ((eq? op 'magnitude) x)
+;          ((eq? op 'angle) y)
+;          ((eq? op 'real-part)
+;           (* x (cos y)))
+;          ((eq? op 'imag-part)
+;           (* x (sin y)))
+;          (else
+;           (error "Unknown op: MAKE-FROM-MAG-ANG" op))))
+;  dispatch)
+
+; ex 2.76
