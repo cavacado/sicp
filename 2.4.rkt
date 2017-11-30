@@ -393,3 +393,53 @@
                      (val2range v2)))
         (else
           (error "unknown exp: " v1 " or" v2))))
+
+;; lecture 10 abstraction and tables
+
+(define (find-assoc key alist)
+  (cond ((null? alist) #f)
+        ((equal? key (caar alist)) (cadar alist))
+        (else (find-assoc key (cdr alist)))))
+
+(define a1 '((x 15) (y 20)))
+
+(define (add-assoc key val alist)
+  (cons (list key val) alist))
+
+(define a2 (add-assoc 'y 10 a1))
+
+(define table1-tag 'table1)
+
+(define make-table1 (cons table1-tag nil))
+
+(define (table1-get tbl key)
+  (find-assoc key (cdr tbl)))
+
+(define (table1-put! tbl key val)
+  (set-cdr! tbl (add-assoc key val (cdr tbl))))
+
+(define t2-tag 'table2)
+
+(define (make-table2 size hashfunc)
+  (let ((buckets (make-vector size nil)))
+     (list t2-tag size hashfunc buckets)))
+
+(define (size-of tbl) (cadr tbl))
+
+(define (hashfunc-of tbl) (caddr tbl))
+
+(define (buckets-of tbl) (cadddr tbl))
+
+(define (table2-get tbl key)
+  (let ((index
+        ((hashfunc-of tbl) key (size-of tbl))))
+    (find-assoc key
+                (vector-ref (buckets-of tbl) index))))
+
+(define (table2-put! tbl key val)
+  (let ((index
+          ((hashfunc-of tbl) key (size-of tbl)))
+        (buckets (buckets-of tbl)))
+        (vector-set! buckets index
+                     (add-assoc key val (vector-ref buckets
+                                                    index)))))
