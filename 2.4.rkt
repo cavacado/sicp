@@ -394,7 +394,7 @@
         (else
           (error "unknown exp: " v1 " or" v2))))
 
-;; lecture 10 abstraction and tables
+;; lecture 11 abstraction and tables
 
 (define (find-assoc key alist)
   (cond ((null? alist) #f)
